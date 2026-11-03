@@ -1,0 +1,8 @@
+@tailwind base;@tailwind components;@tailwind utilities;
+@layer base{body{@apply bg-ivory text-navy font-sans antialiased}h1,h2,h3{@apply font-serif}:focus-visible{outline:2px solid #C6A66B;outline-offset:2px}}
+@layer components{
+.btn{@apply inline-flex items-center justify-center gap-2 px-6 py-3 text-sm tracking-wide transition bg-navy text-white hover:bg-gold hover:text-navy disabled:opacity-50}
+.btn-g{@apply inline-flex items-center justify-center gap-2 px-6 py-3 text-sm tracking-wide transition bg-gold text-navy hover:bg-navy hover:text-white}
+.btn-o{@apply inline-flex items-center justify-center gap-2 px-6 py-3 text-sm tracking-wide transition border border-navy text-navy hover:bg-navy hover:text-white}
+.input{@apply w-full border border-navy/20 bg-white px-4 py-3 text-sm outline-none focus:border-gold}
+.wrap{@apply max-w-7xl mx-auto px-5 md:px-8}.eyebrow{@apply text-xs uppercase tracking-[.25em] text-gold}}

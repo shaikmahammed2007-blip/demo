@@ -1,0 +1,16 @@
+import {useMemo,useState} from 'react';import {useSearchParams} from 'react-router-dom';import {Search} from 'lucide-react';
+import {PRODUCTS,CATS,BRANDS} from '../data/products';import ProductCard from '../components/ProductCard';import {useTitle} from '../components/ui';import {useStore} from '../context/Store';import {inr} from '../config';
+export default function Shop(){useTitle('Shop','Browse our eyewear catalogue.');const[sp,setSp]=useSearchParams();const{wish}=useStore();
+ const[q,setQ]=useState(''),[brand,setBrand]=useState('All'),[max,setMax]=useState(16000),[sort,setSort]=useState('featured');const cat=sp.get('cat')||'All',onlyWish=sp.get('wish')==='1';
+ const list=useMemo(()=>{let l=PRODUCTS.filter(p=>(cat==='All'||p.cat===cat)&&(brand==='All'||p.brand===brand)&&p.price<=max&&(!onlyWish||wish.includes(p.id))&&(p.name+p.brand+p.cat).toLowerCase().includes(q.toLowerCase()));
+  const s={low:(a,b)=>a.price-b.price,high:(a,b)=>b.price-a.price,rating:(a,b)=>b.rating-a.rating,featured:()=>0}[sort];return[...l].sort(s)},[q,cat,brand,max,sort,onlyWish,wish]);
+ const setCat=c=>{const n=new URLSearchParams(sp);c==='All'?n.delete('cat'):n.set('cat',c);setSp(n)};const reset=()=>{setQ('');setBrand('All');setMax(16000);setSort('featured');setSp({})};
+ return <div className="wrap py-10"><h1 className="text-4xl md:text-5xl">{onlyWish?'Your wishlist':'The collection'}</h1>
+ <div className="mt-8 grid lg:grid-cols-[240px_1fr] gap-8"><aside className="space-y-6" aria-label="Filters">
+ <div className="relative"><Search size={16} className="absolute left-3 top-3.5 text-navy/50"/><input className="input !pl-9" placeholder="Search frames" aria-label="Search products" value={q} onChange={e=>setQ(e.target.value)}/></div>
+ <div><p className="eyebrow mb-2">Category</p>{['All',...CATS].map(c=><button key={c} onClick={()=>setCat(c)} aria-pressed={cat===c} className={`block text-left py-1 text-sm ${cat===c?'text-gold font-medium':'hover:text-gold'}`}>{c}</button>)}</div>
+ <div><label className="eyebrow mb-2 block" htmlFor="br">Brand</label><select id="br" className="input" value={brand} onChange={e=>setBrand(e.target.value)}>{['All',...BRANDS].map(b=><option key={b}>{b}</option>)}</select></div>
+ <div><label className="eyebrow mb-2 block" htmlFor="pr">Max price: {inr(max)}</label><input id="pr" type="range" min="2000" max="16000" step="500" value={max} onChange={e=>setMax(+e.target.value)} className="w-full accent-[#C6A66B]"/></div>
+ <button onClick={reset} className="btn-o w-full">Reset filters</button></aside>
+ <section><div className="flex justify-between items-center mb-4"><p className="text-sm text-navy/60" role="status">{list.length} products</p><select aria-label="Sort" className="input !w-auto" value={sort} onChange={e=>setSort(e.target.value)}><option value="featured">Featured</option><option value="low">Price: low to high</option><option value="high">Price: high to low</option><option value="rating">Top rated</option></select></div>
+ {list.length?<div className="grid grid-cols-2 xl:grid-cols-3 gap-4">{list.map(p=><ProductCard key={p.id} p={p}/>)}</div>:<div className="py-20 text-center"><p className="font-serif text-2xl">No products match.</p><button onClick={reset} className="btn mt-4">Clear filters</button></div>}</section></div></div>}

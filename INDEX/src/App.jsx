@@ -1,0 +1,6 @@
+import {useEffect} from 'react';import {Routes,Route,useLocation,Link} from 'react-router-dom';import {AnimatePresence,motion} from 'framer-motion';
+import Layout from './components/Layout';import Home from './pages/Home';import Shop from './pages/Shop';import Product from './pages/Product';import {About,Appointments,Contact} from './pages/Info';import Cart from './pages/Cart';
+const NotFound=()=><div className="wrap py-32 text-center"><h1 className="text-5xl">Page not found</h1><Link to="/" className="btn mt-8">Back to home</Link></div>;
+export default function App(){const loc=useLocation();useEffect(()=>{window.scrollTo(0,0)},[loc.pathname]);
+ return <Layout><AnimatePresence mode="wait"><motion.div key={loc.pathname} initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} exit={{opacity:0}} transition={{duration:.25}}>
+ <Routes location={loc}><Route path="/" element={<Home/>}/><Route path="/shop" element={<Shop/>}/><Route path="/product/:id" element={<Product/>}/><Route path="/about" element={<About/>}/><Route path="/appointments" element={<Appointments/>}/><Route path="/contact" element={<Contact/>}/><Route path="/cart" element={<Cart/>}/><Route path="*" element={<NotFound/>}/></Routes></motion.div></AnimatePresence></Layout>}
